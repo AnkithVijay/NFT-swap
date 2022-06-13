@@ -7,7 +7,6 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Main is ERC721 {
-
     constructor() ERC721("NFTSwap", "NTSP") {}
 
     uint256 counter = 0;
@@ -39,6 +38,8 @@ contract Main is ERC721 {
         address owner;
         uint256 tradingId;
         bool isActive;
+        uint256 creationTime;
+        uint256 expiryTime;
     }
 
     OwnerTradingObject public ownerTradingObject;
@@ -58,10 +59,19 @@ contract Main is ERC721 {
     function createTrade(
         address caddress,
         uint256 tokenID,
-        string calldata chainId
+        string calldata chainId,
+        uint256 expiryTime
     ) external payable {
         uint256 id = getID();
-        ownerTradingObjects.push(OwnerTradingObject(msg.sender, id, true));
+        ownerTradingObjects.push(
+            OwnerTradingObject(
+                msg.sender,
+                id,
+                true,
+                block.timestamp,
+                block.timestamp + expiryTime
+            )
+        );
         SwapTradingObject memory _swapTradingObj;
         _swapTradingObj.id = id;
         _swapTradingObj.owner1 = msg.sender;
